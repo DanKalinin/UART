@@ -43,14 +43,14 @@
     UARTPacket *TXPacket = [[UARTPacket alloc] initWithData:data];
     UARTCommand *command = [[UARTCommand alloc] initWithTXPacket:TXPacket];
     
-    [self.peripheral sendCommand:command completion:^(UARTCommand *command, NSError *error) {
-        NSLog(@"xxxxxx ------- %@", command.RXPacket.array);
+    [self.peripheral sendCommand:command completion:^(UARTCommand *command) {
+        NSLog(@"xxxxxx ------- %f", command.roundtripTime);
     }];
     
     command = [[UARTCommand alloc] initWithTXPacket:TXPacket];
     
-    [self.peripheral sendCommand:command completion:^(UARTCommand *command, NSError *error) {
-        NSLog(@"yyyyyy ------- %@", command.RXPacket.array);
+    [self.peripheral sendCommand:command completion:^(UARTCommand *command) {
+        NSLog(@"yyyyyy ------- %f", command.roundtripTime);
     }];
 }
 

@@ -30,6 +30,8 @@ static NSString *const TXCharacteristic = @"TX";
 @interface CBPeripheral (UARTSelectors)
 
 @property NSOperationQueue *commandQueue;
+@property dispatch_semaphore_t semaphore;
+@property NSMutableDictionary *handlers;
 
 @end
 
@@ -125,12 +127,12 @@ static NSString *const TXCharacteristic = @"TX";
 @property UARTPacket *TXPacket;
 @property UARTPacket *RXPacket;
 
+@property NSError *error;
+
 @property CBPeripheral *peripheral;
-@property (copy) UARTCommandHandler completion;
 
-@property dispatch_semaphore_t writeSemaphore;
-@property dispatch_semaphore_t updateSemaphore;
-
+@property dispatch_time_t startTime;
+@property NSTimeInterval roundtripTime;
 
 @end
 
@@ -150,45 +152,23 @@ static NSString *const TXCharacteristic = @"TX";
 }
 
 - (void)main {
-    NSLog(@"a");
-    NSError *cancelError = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandCancelled];
+    dispatch_semaphore_wait(self.peripheral.semaphore, DISPATCH_TIME_FOREVER);
     
-    if ([self isCancelled]) {
-        [self invokeHandler:cancelError];
-        return;
-    }
-    
-    CBCharacteristic *characteristic = self.peripheral[UARTService][TXCharacteristic];
+    self.startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
     
     self.peripheral.delegate = self;
+    
+    CBCharacteristic *characteristic = self.peripheral[UARTService][TXCharacteristic];
     [self.peripheral writeValue:self.TXPacket.data forCharacteristic:characteristic];
     
-    self.writeSemaphore = dispatch_semaphore_create(0);
-    dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.timeout * NSEC_PER_SEC));
-    BOOL expired = dispatch_semaphore_wait(self.writeSemaphore, timeout);
-    NSLog(@"b");
-    if ([self isCancelled]) {
-        [self invokeHandler:cancelError];
-        return;
-    }
+    __weak typeof(self) this = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.timeout * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        this.error = [this.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandTimedOut];
+        [this invokeHandler];
+    });
     
-    NSError *timeoutError = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandTimedOut];
-    
-    if (expired) {
-        [self invokeHandler:timeoutError];
-        return;
-    }
-    
-    if (!self.waitForResponse) {
-        [self invokeHandler:nil];
-        return;
-    }
-    
-    self.updateSemaphore = dispatch_semaphore_create(0);
-    expired = dispatch_semaphore_wait(self.updateSemaphore, timeout);
-    if (expired) {
-        [self invokeHandler:timeoutError];
-    }
+    dispatch_semaphore_wait(self.peripheral.semaphore, DISPATCH_TIME_FOREVER);
+    dispatch_semaphore_signal(self.peripheral.semaphore);
 }
 
 - (BOOL)isResponse:(UARTPacket *)RXPacket {
@@ -196,40 +176,59 @@ static NSString *const TXCharacteristic = @"TX";
 }
 
 - (BOOL)isCancellableBy:(UARTCommand *)command {
-    return NO;
+    return YES;
 }
 
 #pragma mark - Peripheral
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    dispatch_semaphore_signal(self.writeSemaphore);
+    
+    if ([self isCancelled]) {
+        error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandCancelled];
+    }
+    
     if (error) {
-        [self invokeHandler:error];
+        self.error = error;
+        [self invokeHandler];
+    } else if (!self.waitForResponse) {
+        [self invokeHandler];
     }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    
+    if ([self isCancelled]) {
+        error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandCancelled];
+    }
+    
     if (error) {
-        dispatch_semaphore_signal(self.updateSemaphore);
-        [self invokeHandler:error];
+        self.error = error;
+        [self invokeHandler];
     } else {
         UARTPacket *RXPacket = [[UARTPacket alloc] initWithData:characteristic.value];
         if ([self isResponse:RXPacket]) {
-            dispatch_semaphore_signal(self.updateSemaphore);
             self.RXPacket = RXPacket;
-            [self invokeHandler:nil];
+            [self invokeHandler];
         }
     }
 }
 
 #pragma mark - Helpers
 
-- (void)invokeHandler:(NSError *)error {
-    if (self.completion) {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            self.completion(self, error);
-        }];
-    }
+- (void)invokeHandler {
+    
+    dispatch_time_t endTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+    dispatch_time_t deltaTime = endTime - self.startTime;
+    self.roundtripTime = (NSTimeInterval)deltaTime / NSEC_PER_SEC;
+    
+    [NSOperationQueue.mainQueue addOperationWithBlock:^{
+        UARTCommandHandler handler = self.peripheral.handlers[@(self.hash)];
+        if (handler) {
+            handler(self);
+            self.peripheral.handlers[@(self.hash)] = nil;
+        }
+        dispatch_semaphore_signal(self.peripheral.semaphore);
+    }];
 }
 
 @end
@@ -261,14 +260,40 @@ static NSString *const TXCharacteristic = @"TX";
     return commandQueue;
 }
 
+- (void)setSemaphore:(dispatch_semaphore_t)semaphore {
+    objc_setAssociatedObject(self, @selector(semaphore), semaphore, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (dispatch_semaphore_t)semaphore {
+    dispatch_semaphore_t semaphore = objc_getAssociatedObject(self, @selector(semaphore));
+    if (semaphore) return semaphore;
+    
+    semaphore = dispatch_semaphore_create(1);
+    self.semaphore = semaphore;
+    return semaphore;
+}
+
+- (void)setHandlers:(NSMutableDictionary *)handlers {
+    objc_setAssociatedObject(self, @selector(handlers), handlers, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSMutableDictionary *)handlers {
+    NSMutableDictionary *handlers = objc_getAssociatedObject(self, @selector(handlers));
+    if (handlers) return handlers;
+    
+    handlers = [NSMutableDictionary dictionary];
+    self.handlers = handlers;
+    return handlers;
+}
+
 - (void)sendCommand:(UARTCommand *)command completion:(UARTCommandHandler)completion {
     command.peripheral = self;
-    command.completion = completion;
+    self.handlers[@(command.hash)] = completion;
     [self.commandQueue addOperation:command];
     
     if (command.cancelPrevious ) {
         NSArray *commands = self.commandQueue.operations;
-        NSUInteger index = [commands indexOfObject:self];
+        NSUInteger index = [commands indexOfObject:command];
         if (index > 0) {
             index--;
             UARTCommand *prevCommand = commands[index];
