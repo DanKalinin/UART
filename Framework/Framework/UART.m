@@ -129,7 +129,7 @@ static NSString *const TXCharacteristic = @"TX";
     NSString *isExecutingKey;
     NSString *isFinishedKey;
     
-    NSTimer *timer;
+    dispatch_time_t startTime;
 }
 
 @property UARTPacket *TXPacket;
@@ -139,8 +139,7 @@ static NSString *const TXCharacteristic = @"TX";
 
 @property NSError *error;
 
-//@property dispatch_time_t startTime;
-//@property NSTimeInterval roundtripTime;
+@property NSTimeInterval roundtripTime;
 
 @end
 
@@ -178,15 +177,26 @@ static NSString *const TXCharacteristic = @"TX";
 - (void)start {
     if ([self isCancelled]) {
         [self willChangeValueForKey:isFinishedKey];
+        
+        self.error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandCancelled];
+        
         finished = YES;
+        
         [self didChangeValueForKey:isFinishedKey];
         return;
     }
     
     [self willChangeValueForKey:isExecutingKey];
-    self.peripheral.delegate = self;
     
-    timer = [NSTimer scheduledTimerWithTimeInterval:self.timeout target:self selector:@selector(onFire) userInfo:nil repeats:NO];
+    startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.timeout * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([self isExecuting]) {
+            self.error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandTimedOut];
+            [self completeOperation];
+        }
+    });
+    
+    self.peripheral.delegate = self;
     
     CBCharacteristic *characteristic = self.peripheral[UARTService][TXCharacteristic];
     [self.peripheral writeValue:self.TXPacket.data forCharacteristic:characteristic];
@@ -200,7 +210,8 @@ static NSString *const TXCharacteristic = @"TX";
     [self willChangeValueForKey:isFinishedKey];
     [self willChangeValueForKey:isExecutingKey];
     
-    [timer invalidate];
+    dispatch_time_t completionTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+    self.roundtripTime = (NSTimeInterval)(completionTime - startTime) / NSEC_PER_SEC;
     
     executing = NO;
     finished = YES;
@@ -214,18 +225,17 @@ static NSString *const TXCharacteristic = @"TX";
 }
 
 - (BOOL)isCancellableBy:(UARTCommand *)command {
-    return YES;
-}
-
-#pragma mark - Actions
-
-- (void)onFire {
-    self.error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandTimedOut];
+    return NO;
 }
 
 #pragma mark - Peripheral
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    
+    if ([self isCancelled]) {
+        error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandCancelled];
+    }
+    
     if (error) {
         self.error = error;
         [self completeOperation];
@@ -237,6 +247,11 @@ static NSString *const TXCharacteristic = @"TX";
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    
+    if ([self isCancelled]) {
+        error = [self.bundle errorWithDomain:UARTErrorDomain code:UARTErrorCommandCancelled];
+    }
+    
     if (error) {
         self.error = error;
         [self completeOperation];
@@ -280,26 +295,23 @@ static NSString *const TXCharacteristic = @"TX";
 
 - (void)sendCommand:(UARTCommand *)command completion:(UARTCommandHandler)completion {
     command.peripheral = self;
-    command.completionBlock = ^{
-        NSLog(@"completed");
-    };
-    [self.commandQueue addOperation:command];
     
-//    command.peripheral = self;
-//    self.handlers[@(command.hash)] = completion;
-//    [self.commandQueue addOperation:command];
-//    
-//    if (command.cancelPrevious ) {
-//        NSArray *commands = self.commandQueue.operations;
-//        NSUInteger index = [commands indexOfObject:command];
-//        if (index > 0) {
-//            index--;
-//            UARTCommand *prevCommand = commands[index];
-//            if ([prevCommand isCancellableBy:command]) {
-//                [prevCommand cancel];
-//            }
-//        }
-//    }
+    __block typeof(command) cmd = command;
+    command.completionBlock = ^{
+        [NSOperationQueue.mainQueue addOperationWithBlock:^{
+            completion(cmd);
+            cmd = nil;
+        }];
+    };
+    
+    if (command.cancelPrevious) {
+        UARTCommand *lastCommand = self.commandQueue.operations.lastObject;
+        if (lastCommand && [lastCommand isCancellableBy:command]) {
+            [lastCommand cancel];
+        }
+    }
+    
+    [self.commandQueue addOperation:command];
 }
 
 @end

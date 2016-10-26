@@ -42,15 +42,18 @@
     
     UARTPacket *TXPacket = [[UARTPacket alloc] initWithData:data];
     UARTCommand *command = [[UARTCommand alloc] initWithTXPacket:TXPacket];
+    command.timeout = 1.0;
     
     [self.peripheral sendCommand:command completion:^(UARTCommand *command) {
-//        NSLog(@"xxxxxx ------- %f", command.roundtripTime);
+        NSLog(@"xxxxxx ------- %f", command.roundtripTime);
     }];
     
     command = [[UARTCommand alloc] initWithTXPacket:TXPacket];
+    command.timeout = 1.0;
+    command.cancelPrevious = YES;
     
     [self.peripheral sendCommand:command completion:^(UARTCommand *command) {
-//        NSLog(@"yyyyyy ------- %f", command.roundtripTime);
+        NSLog(@"yyyyyy ------- %f", command.roundtripTime);
     }];
 }
 

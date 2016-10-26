@@ -65,6 +65,7 @@ typedef void (^UARTCommandHandler)(UARTCommand *command);
 @property BOOL cancelPrevious;
 
 @property (readonly) NSError *error;
+@property (readonly) NSTimeInterval roundtripTime;
 
 - (BOOL)isResponse:(UARTPacket *)RXPacket;
 - (BOOL)isCancellableBy:(UARTCommand *)command;
