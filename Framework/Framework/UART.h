@@ -60,12 +60,11 @@ typedef void (^UARTCommandHandler)(UARTCommand *command);
 @property (readonly) UARTPacket *TXPacket;
 @property (readonly) UARTPacket *RXPacket;
 
-@property (readonly) NSTimeInterval roundtripTime;
-@property (readonly) NSError *error;
-
 @property NSTimeInterval timeout;
 @property BOOL waitForResponse;
 @property BOOL cancelPrevious;
+
+@property (readonly) NSError *error;
 
 - (BOOL)isResponse:(UARTPacket *)RXPacket;
 - (BOOL)isCancellableBy:(UARTCommand *)command;
