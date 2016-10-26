@@ -28,7 +28,7 @@ typedef NS_ENUM(NSInteger, UARTError) {
 
 
 
-#pragma mark - Packet, Command
+#pragma mark - Packet
 
 @interface UARTPacket : NSObject
 
@@ -50,6 +50,8 @@ typedef NS_ENUM(NSInteger, UARTError) {
 
 
 
+
+#pragma mark - Command
 
 @interface UARTCommand : NSOperation
 

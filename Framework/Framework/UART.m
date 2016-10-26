@@ -44,7 +44,7 @@ static NSString *const TXCharacteristic = @"TX";
 
 
 
-#pragma mark - Packet, Command
+#pragma mark - Packet
 
 @interface UARTPacket ()
 
@@ -121,6 +121,8 @@ static NSString *const TXCharacteristic = @"TX";
 
 
 
+
+#pragma mark - Command
 
 @interface UARTCommand () <CBPeripheralDelegate> {
     BOOL executing;
