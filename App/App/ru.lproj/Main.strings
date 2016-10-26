@@ -1,0 +1,15 @@
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "0Rn-mZ-nsJ"; */
+"0Rn-mZ-nsJ.text" = "Title";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "PiM-qh-2T6"; */
+"PiM-qh-2T6.text" = "Subtitle";
+
+/* Class = "UINavigationItem"; title = "Peripherals"; ObjectID = "fMu-qU-THl"; */
+"fMu-qU-THl.title" = "Peripherals";
+
+/* Class = "UINavigationItem"; title = "Commands"; ObjectID = "p1A-aW-IHH"; */
+"p1A-aW-IHH.title" = "Commands";
+
+/* Class = "UILabel"; text = "Pull to refresh"; ObjectID = "sjo-DH-P5m"; */
+"sjo-DH-P5m.text" = "Pull to refresh";

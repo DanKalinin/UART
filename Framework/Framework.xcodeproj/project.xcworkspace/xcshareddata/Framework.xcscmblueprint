@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "1C6C57D83E4864745F44892761B1D8F4B7352912",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BFADB2A208B674039E55D77ECBE534817A51E4B7" : 9223372036854775807,
+    "078E6104D13DDB7E626ECDABFAB4E3BAED514BBA" : 9223372036854775807,
+    "1C6C57D83E4864745F44892761B1D8F4B7352912" : 9223372036854775807,
+    "A450A60E9CB42C97D48E2CAFF11E76FCDB9B2901" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9CE93EC7-528C-4B9C-853F-D24B2BD122C6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BFADB2A208B674039E55D77ECBE534817A51E4B7" : "Helpers\/",
+    "078E6104D13DDB7E626ECDABFAB4E3BAED514BBA" : "JSONSchema\/",
+    "1C6C57D83E4864745F44892761B1D8F4B7352912" : "UARTManager\/",
+    "A450A60E9CB42C97D48E2CAFF11E76FCDB9B2901" : "BTConfiguration\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Framework",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Framework\/Framework.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/JSONSchema.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "078E6104D13DDB7E626ECDABFAB4E3BAED514BBA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/UARTManager.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1C6C57D83E4864745F44892761B1D8F4B7352912"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/BTConfiguration.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A450A60E9CB42C97D48E2CAFF11E76FCDB9B2901"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/Helpers.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BFADB2A208B674039E55D77ECBE534817A51E4B7"
+    }
+  ]
+}

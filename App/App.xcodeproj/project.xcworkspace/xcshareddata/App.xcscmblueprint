@@ -1,0 +1,58 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "F921EB89793764866E126FFD7458AB955CB9EB3C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BFADB2A208B674039E55D77ECBE534817A51E4B7" : 9223372036854775807,
+    "F921EB89793764866E126FFD7458AB955CB9EB3C" : 9223372036854775807,
+    "345F2E131FDEB4C61BA8C91826DDEB3AA62AD086" : 9223372036854775807,
+    "078E6104D13DDB7E626ECDABFAB4E3BAED514BBA" : 9223372036854775807,
+    "A450A60E9CB42C97D48E2CAFF11E76FCDB9B2901" : 9223372036854775807,
+    "1C6C57D83E4864745F44892761B1D8F4B7352912" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "44871259-C9EF-43DA-BBC8-561435E82C39",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BFADB2A208B674039E55D77ECBE534817A51E4B7" : "Helpers\/",
+    "F921EB89793764866E126FFD7458AB955CB9EB3C" : "UART\/",
+    "345F2E131FDEB4C61BA8C91826DDEB3AA62AD086" : "HUD\/",
+    "078E6104D13DDB7E626ECDABFAB4E3BAED514BBA" : "JSONSchema\/",
+    "A450A60E9CB42C97D48E2CAFF11E76FCDB9B2901" : "BTConfiguration\/",
+    "1C6C57D83E4864745F44892761B1D8F4B7352912" : "UARTManager\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "App",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "App\/App.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/JSONSchema.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "078E6104D13DDB7E626ECDABFAB4E3BAED514BBA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/UARTManager.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1C6C57D83E4864745F44892761B1D8F4B7352912"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/HUD.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "345F2E131FDEB4C61BA8C91826DDEB3AA62AD086"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/BTConfiguration.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A450A60E9CB42C97D48E2CAFF11E76FCDB9B2901"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/Helpers.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BFADB2A208B674039E55D77ECBE534817A51E4B7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DanKalinin\/UART.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F921EB89793764866E126FFD7458AB955CB9EB3C"
+    }
+  ]
+}
