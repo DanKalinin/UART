@@ -58,6 +58,8 @@ typedef NS_ENUM(NSInteger, UARTError) {
 typedef void (^UARTCommandHandler)(UARTCommand *command);
 
 - (instancetype)initWithTXPacket:(UARTPacket *)packet;
+- (instancetype)initWithIdentifier:(NSString *)identifier;
++ (instancetype)commandWithIdentifier:(NSString *)identifier;
 
 @property (readonly) UARTPacket *TXPacket;
 @property (readonly) UARTPacket *RXPacket;

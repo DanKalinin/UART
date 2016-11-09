@@ -16,6 +16,11 @@ static NSString *const UARTService = @"UART";
 static NSString *const RXCharacteristic = @"RX";
 static NSString *const TXCharacteristic = @"TX";
 
+static NSString *const UARTCommandDictionary = @"Commands";
+static NSString *const RXKey = @"rx";
+static NSString *const TXKey = @"tx";
+static NSString *const CountKey = @"count";
+
 
 
 
@@ -143,11 +148,28 @@ static NSString *const TXCharacteristic = @"TX";
 
 @property NSTimeInterval roundtripTime;
 
+@property (class) NSDictionary *dictionary;
+@property NSDictionary *dictionary;
+
 @end
 
 
 
 @implementation UARTCommand
+
+static NSDictionary *_dictionary = nil;
+
++ (void)setDictionary:(NSDictionary *)dictionary {
+    _dictionary = dictionary;
+}
+
++ (NSDictionary *)dictionary {
+    if (_dictionary) return _dictionary;
+    
+    NSURL *URL = [self.bundle URLForResource:UARTCommandDictionary withExtension:PlistExtension];
+    _dictionary = [NSDictionary dictionaryWithContentsOfURL:URL];
+    return _dictionary;
+}
 
 - (instancetype)initWithTXPacket:(UARTPacket *)packet {
     self = [self init];
@@ -162,6 +184,19 @@ static NSString *const TXCharacteristic = @"TX";
         isFinishedKey = NSStringFromSelector(@selector(isFinished));
     }
     return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier {
+    self = [self init];
+    if (self) {
+        self.dictionary = self.class.dictionary[identifier];
+    }
+    return self;
+}
+
++ (instancetype)commandWithIdentifier:(NSString *)identifier {
+    UARTCommand *command = [self.alloc initWithIdentifier:identifier];
+    return command;
 }
 
 - (BOOL)isConcurrent {
