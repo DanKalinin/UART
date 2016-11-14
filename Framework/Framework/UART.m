@@ -16,11 +16,6 @@ static NSString *const UARTService = @"UART";
 static NSString *const RXCharacteristic = @"RX";
 static NSString *const TXCharacteristic = @"TX";
 
-static NSString *const UARTCommandDictionary = @"Commands";
-static NSString *const RXKey = @"rx";
-static NSString *const TXKey = @"tx";
-static NSString *const CountKey = @"count";
-
 
 
 
@@ -139,7 +134,6 @@ static NSString *const CountKey = @"count";
     dispatch_time_t startTime;
 }
 
-@property UARTPacket *TXPacket;
 @property UARTPacket *RXPacket;
 
 @property CBPeripheral *peripheral;
@@ -148,33 +142,15 @@ static NSString *const CountKey = @"count";
 
 @property NSTimeInterval roundtripTime;
 
-@property (class) NSDictionary *dictionary;
-@property NSDictionary *dictionary;
-
 @end
 
 
 
 @implementation UARTCommand
 
-static NSDictionary *_dictionary = nil;
-
-+ (void)setDictionary:(NSDictionary *)dictionary {
-    _dictionary = dictionary;
-}
-
-+ (NSDictionary *)dictionary {
-    if (_dictionary) return _dictionary;
-    
-    NSURL *URL = [self.bundle URLForResource:UARTCommandDictionary withExtension:PlistExtension];
-    _dictionary = [NSDictionary dictionaryWithContentsOfURL:URL];
-    return _dictionary;
-}
-
-- (instancetype)initWithTXPacket:(UARTPacket *)packet {
-    self = [self init];
+- (instancetype)init {
+    self = [super init];
     if (self) {
-        self.TXPacket = packet;
         self.timeout = 60.0;
         self.waitForResponse = YES;
         self.cancelPrevious = NO;
@@ -186,17 +162,12 @@ static NSDictionary *_dictionary = nil;
     return self;
 }
 
-- (instancetype)initWithIdentifier:(NSString *)identifier {
+- (instancetype)initWithTXPacket:(UARTPacket *)packet {
     self = [self init];
     if (self) {
-        self.dictionary = self.class.dictionary[identifier];
+        self.TXPacket = packet;
     }
     return self;
-}
-
-+ (instancetype)commandWithIdentifier:(NSString *)identifier {
-    UARTCommand *command = [self.alloc initWithIdentifier:identifier];
-    return command;
 }
 
 - (BOOL)isConcurrent {

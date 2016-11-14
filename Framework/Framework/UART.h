@@ -55,13 +55,12 @@ typedef NS_ENUM(NSInteger, UARTError) {
 
 @interface UARTCommand : NSOperation
 
-typedef void (^UARTCommandHandler)(UARTCommand *command);
+typedef void (^UARTCommandHandler)(__kindof UARTCommand *command);
 
+- (instancetype)init;
 - (instancetype)initWithTXPacket:(UARTPacket *)packet;
-- (instancetype)initWithIdentifier:(NSString *)identifier;
-+ (instancetype)commandWithIdentifier:(NSString *)identifier;
 
-@property (readonly) UARTPacket *TXPacket;
+@property UARTPacket *TXPacket;
 @property (readonly) UARTPacket *RXPacket;
 
 @property NSTimeInterval timeout;
