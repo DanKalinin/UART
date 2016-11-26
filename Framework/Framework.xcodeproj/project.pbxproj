@@ -30,7 +30,7 @@
 		37AA66A01DBEAE4700B240C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37AA66A71DBEAE5B00B240C5 /* UART.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UART.h; sourceTree = "<group>"; };
 		37AA66A81DBEAE5B00B240C5 /* UART.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UART.m; sourceTree = "<group>"; };
-		37AA66AD1DBEAFD500B240C5 /* Framework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Framework.xcodeproj; path = ../../../../BTConfiguration/Framework/Framework.xcodeproj; sourceTree = "<group>"; };
+		37AA66AD1DBEAFD500B240C5 /* Framework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Framework.xcodeproj; path = ../../BTConfiguration/Framework/Framework.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
