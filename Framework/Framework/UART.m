@@ -87,7 +87,7 @@ static NSString *const TXCharacteristic = @"TX";
 }
 
 - (NSString *)string {
-    NSString *string = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
+    NSString *string = [NSString.alloc initWithData:self.data encoding:NSUTF8StringEncoding];
     return string;
 }
 
@@ -264,7 +264,7 @@ static NSString *const TXCharacteristic = @"TX";
         self.error = error;
         [self completeOperation];
     } else {
-        UARTPacket *RXPacket = [[UARTPacket alloc] initWithData:characteristic.value];
+        UARTPacket *RXPacket = [UARTPacket.alloc initWithData:characteristic.value];
         if ([self isResponse:RXPacket]) {
             self.RXPacket = RXPacket;
             [self completeOperation];
