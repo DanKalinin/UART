@@ -124,7 +124,7 @@ static NSString *const TXCharacteristic = @"TX";
 
 #pragma mark - Command
 
-@interface UARTCommand () <CBPeripheralDelegate> {
+@interface UARTCommand () <BTPeripheralDelegate> {
     BOOL executing;
     BOOL finished;
     
@@ -270,6 +270,11 @@ static NSString *const TXCharacteristic = @"TX";
             [self completeOperation];
         }
     }
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didDisconnectWithError:(NSError *)error {
+    [peripheral.commandQueue cancelAllOperations];
+    peripheral.commandQueue = nil;
 }
 
 @end
